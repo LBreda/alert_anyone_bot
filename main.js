@@ -18,7 +18,7 @@ bot.command('all', ctx => {
     ctx.reply(`Hey, ${users.join(' ')}`)
 })
 
-bot.command('notifyme', ctx => {
+bot.command('alertyme', ctx => {
     let username = ctx.message.from.username
     let directory = dir(ctx)
     if(username) {
@@ -35,7 +35,7 @@ bot.command('notifyme', ctx => {
     }
 })
 
-bot.command('dontnotifyme', ctx => {
+bot.command('dontalertme', ctx => {
     let username = ctx.message.from.username
     let directory = dir(ctx)
     if(username) {
