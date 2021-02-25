@@ -36,10 +36,10 @@ bot.command('alertme', ctx => {
     let directory = dir(ctx)
     fs.writeFile(`${directory}/${user.id}`, JSON.stringify(user), e => {
         if (e) {
-            ctx.reply(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
+            ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
             console.log(e)
         } else {
-            ctx.reply(`I'll notify you, [${user.handle}](tg://user?id=${user.id})! 👍`)
+            ctx.replyWithMarkdown(`I'll notify you, [${user.handle}](tg://user?id=${user.id})! 👍`)
         }
     })
 })
@@ -49,10 +49,14 @@ bot.command('dontalertme', ctx => {
     let directory = dir(ctx)
     fs.unlink(`${directory}/${user.id}`, e => {
         if (e) {
-            ctx.reply(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
+            if(e.code === 'ENOENT') {
+                ctx.replyWithMarkdown(`You were not subscribed, [${user.handle}](tg://user?id=${user.id})!`)
+            } else {
+                ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
+            }
             console.log(e)
         } else {
-            ctx.reply(`I won't notify you anymore, [${user.handle}](tg://user?id=${user.id})! 👍`)
+            ctx.replyWithMarkdown(`I won't notify you anymore, [${user.handle}](tg://user?id=${user.id})! 👍`)
         }
     })
 })
