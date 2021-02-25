@@ -28,7 +28,11 @@ bot.command('all', ctx => {
             let userData = JSON.parse(fs.readFileSync(`${directory}/${file}`).toString())
             return `[${userData.handle}](tg://user?id=${userData.id})`
         })
-    ctx.replyWithMarkdown(`Hey, ${users.join(' ')}`)
+    if(users.length){
+        ctx.replyWithMarkdown(`Hey, ${users.join(' ')}`)
+    } else {
+        ctx.replyWithMarkdown(`Noone to alert 😕`)
+    }
 })
 
 bot.command('alertme', ctx => {
@@ -54,7 +58,6 @@ bot.command('dontalertme', ctx => {
             } else {
                 ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
             }
-            console.log(e)
         } else {
             ctx.replyWithMarkdown(`I won't notify you anymore, [${user.handle}](tg://user?id=${user.id})! 👍`)
         }
