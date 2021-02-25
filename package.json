@@ -1,0 +1,21 @@
+{
+  "name": "alert_anyone_bot",
+  "version": "1.0.0",
+  "description": "A bot to alert every participant of a Telegram chat",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bot",
+    "alert",
+    "telegram"
+  ],
+  "author": "Lorenzo Breda <lorenzo@lbreda.com>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "fs": "^0.0.1-security",
+    "telegraf": "^4.1.1"
+  }
+}
