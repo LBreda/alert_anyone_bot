@@ -19,45 +19,36 @@ bot.command('all', ctx => {
 })
 
 bot.command('alertyme', ctx => {
-    let username = ctx.message.from.username
+    let userId = ctx.message.from.id
     let directory = dir(ctx)
-    if(username) {
-        fs.writeFile(`${directory}/${username}`, '', e => {
-            if(e) {
-                ctx.reply(`I'm Ill and I couldn't save your preferences, @${username}! 🤒`)
-                console.log(e)
-            } else {
-                ctx.reply(`I'll notify you, @${username}! 👍`)
-            }
-        })
-    } else {
-        ctx.reply('You need to set a username for me to notify you! 🆔')
-    }
+    fs.writeFile(`${directory}/${username}`, '', e => {
+        if(e) {
+            ctx.reply(`I'm Ill and I couldn't save your preferences, [${userId}](tg://user?id=${userId})! 🤒`)
+            console.log(e)
+        } else {
+            ctx.reply(`I'll notify you, [${userId}](tg://user?id=${userId})! 👍`)
+        }
+    })
 })
 
 bot.command('dontalertme', ctx => {
-    let username = ctx.message.from.username
+    let userId = ctx.message.from.id
     let directory = dir(ctx)
-    if(username) {
-        fs.unlink(`${directory}/${username}`, e => { 
-            if(e) {
-                ctx.reply(`I'm Ill and I couldn't save your preferences, @${username}! 🤒`)
-                console.log(e)
-            } else {
-                ctx.reply(`I won't notify you anymore, @${username}! 👍`)
-            }
-        })
-        
-    } else {
-        ctx.reply('You don\'t have a username, and you aren\t probably subscribed! 🆔')
-    }
+    fs.unlink(`${directory}/${userId}`, e => { 
+        if(e) {
+            ctx.reply(`I'm Ill and I couldn't save your preferences, [${userId}](tg://user?id=${userId})! 🤒`)
+            console.log(e)
+        } else {
+            ctx.reply(`I won't notify you anymore, [${userId}](tg://user?id=${userId})! 👍`)
+        }
+    })
 })
 
 bot.on('left_chat_member', ctx => {
-    let username = ctx.message.from.username
+    let userId = ctx.message.from.id
     let directory = dir(ctx)
-    if(username && fs.existsSync(`${directory}/${username}`)){
-        fs.unlinkSync(`${directory}/${username}`)
+    if(fs.existsSync(`${directory}/${userId}`)){
+        fs.unlinkSync(`${directory}/${userId}`)
     }
 })
 
