@@ -29,7 +29,7 @@ bot.command('all', ctx => {
             return `[${userData.handle}](tg://user?id=${userData.id})`
         })
     if(users.length){
-        ctx.replyWithMarkdown(`Hey, ${users.join(' ')}`)
+        ctx.replyWithMarkdown(`Hey! ${users.join(', ')}`)
     } else {
         ctx.replyWithMarkdown(`Noone to alert 😕`)
     }
