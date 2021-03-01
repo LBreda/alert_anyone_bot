@@ -4,14 +4,22 @@ require('dotenv').config()
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
-let dir = ctx => {
+/**
+ * Gets the db directory name
+ * @param {NarrowedContext} ctx 
+ */
+let getDirName = ctx => {
     let roomId = ctx.message.chat.id
     let dirName = `data/${roomId}`
     if (!fs.existsSync(dirName)) fs.mkdirSync(`data/${roomId}`);
     return dirName
 }
 
-let userData = ctx => {
+/**
+ * Gets sender's data
+ * @param {NarrowedContext} ctx 
+ */
+let getRequestorData = ctx => {
     let sender = ctx.message.from
     return {
         id: sender.id,
@@ -19,9 +27,13 @@ let userData = ctx => {
     }
 }
 
+/**
+ * `/all` command listener. Alerts all the registered users in the current
+ * chat, except for the command issuer
+ */
 bot.command('all', ctx => {
-    let directory = dir(ctx)
-    let sender = userData(ctx)
+    let directory = getDirName(ctx)
+    let sender = getRequestorData(ctx)
     let users = fs.readdirSync(directory)
         .filter(file => !file.startsWith('.') && file != sender.id)
         .map(file => {
@@ -35,9 +47,13 @@ bot.command('all', ctx => {
     }
 })
 
+/**
+ * `alertme` command listener. Subscribes the command issuer for the current
+ * chat
+ */
 bot.command('alertme', ctx => {
-    let user = userData(ctx)
-    let directory = dir(ctx)
+    let user = getRequestorData(ctx)
+    let directory = getDirName(ctx)
     fs.writeFile(`${directory}/${user.id}`, JSON.stringify(user), e => {
         if (e) {
             ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
@@ -48,9 +64,13 @@ bot.command('alertme', ctx => {
     })
 })
 
+/**
+ * `dontalertme` command listener. Remove the subscription for the command
+ * issuer in the current chat
+ */
 bot.command('dontalertme', ctx => {
-    let user = userData(ctx)
-    let directory = dir(ctx)
+    let user = getRequestorData(ctx)
+    let directory = getDirName(ctx)
     fs.unlink(`${directory}/${user.id}`, e => {
         if (e) {
             if(e.code === 'ENOENT') {
@@ -64,9 +84,13 @@ bot.command('dontalertme', ctx => {
     })
 })
 
+/**
+ * `left_chat_member` event listener. Removes a leaving issuer from the
+ * subscribed users list for the current chat
+ */
 bot.on('left_chat_member', ctx => {
     let userId = ctx.message.from.id
-    let directory = dir(ctx)
+    let directory = getDirName(ctx)
     if (fs.existsSync(`${directory}/${userId}`)) {
         fs.unlinkSync(`${directory}/${userId}`)
     }
