@@ -20,10 +20,10 @@ let userData = ctx => {
 }
 
 bot.command('all', ctx => {
-    let room_id = ctx.message.chat.id
     let directory = dir(ctx)
+    let sender = userData(ctx)
     let users = fs.readdirSync(directory)
-        .filter(file => !file.startsWith('.'))
+        .filter(file => !file.startsWith('.') && file != sender.id)
         .map(file => {
             let userData = JSON.parse(fs.readFileSync(`${directory}/${file}`).toString())
             return `[${userData.handle}](tg://user?id=${userData.id})`
