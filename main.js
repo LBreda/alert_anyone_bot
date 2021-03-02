@@ -28,6 +28,14 @@ let getRequestorData = ctx => {
 }
 
 /**
+ * Transforms the user's data into a tag
+ * @param user 
+ */
+let userDataToTag = userData => {
+    return `[${userData.handle}](tg://user?id=${userData.id})`
+}
+
+/**
  * `/all` command listener. Alerts all the registered users in the current
  * chat, except for the command issuer
  */
@@ -38,7 +46,7 @@ bot.command('all', ctx => {
         .filter(file => !file.startsWith('.') && file != sender.id)
         .map(file => {
             let userData = JSON.parse(fs.readFileSync(`${directory}/${file}`).toString())
-            return `[${userData.handle}](tg://user?id=${userData.id})`
+            return userDataToTag(userData)
         })
     if(users.length){
         ctx.replyWithMarkdown(`Hey! ${users.join(', ')}`)
@@ -56,10 +64,10 @@ bot.command('alertme', ctx => {
     let directory = getDirName(ctx)
     fs.writeFile(`${directory}/${user.id}`, JSON.stringify(user), e => {
         if (e) {
-            ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
+            ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, ${userDataToTag(user)}! 🤒`)
             console.log(e)
         } else {
-            ctx.replyWithMarkdown(`I'll notify you, [${user.handle}](tg://user?id=${user.id})! 👍`)
+            ctx.replyWithMarkdown(`I'll notify you, ${userDataToTag(user)}! 👍`)
         }
     })
 })
@@ -74,12 +82,12 @@ bot.command('dontalertme', ctx => {
     fs.unlink(`${directory}/${user.id}`, e => {
         if (e) {
             if(e.code === 'ENOENT') {
-                ctx.replyWithMarkdown(`You were not subscribed, [${user.handle}](tg://user?id=${user.id})!`)
+                ctx.replyWithMarkdown(`You were not subscribed, ${userDataToTag(user)}!`)
             } else {
-                ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${user.handle}](tg://user?id=${user.id})! 🤒`)
+                ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${userDataToTag(user)}! 🤒`)
             }
         } else {
-            ctx.replyWithMarkdown(`I won't notify you anymore, [${user.handle}](tg://user?id=${user.id})! 👍`)
+            ctx.replyWithMarkdown(`I won't notify you anymore, [${userDataToTag(user)}! 👍`)
         }
     })
 })
