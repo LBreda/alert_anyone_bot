@@ -93,6 +93,33 @@ bot.command('dontalertme', ctx => {
 })
 
 /**
+ * `alertuser` command listener. Subscribes tagged users for the current chat
+ */
+bot.command('alertuser', ctx => {
+    let users = ctx.message.entities.filter(entity => entity.type === 'text_mention').map(user => {
+        return {
+            id: sender.id,
+            handle: sender.first_name || sender.username || sender.id
+        }
+    })
+
+    let results = users.reduce((acc, user) => {
+        try {
+            fs.writeFileSync(`${user.id}`, JSON.stringify(user))
+        } catch (e) {
+            acc.failures.push(userDataToTag(user))
+            return acc
+        }
+        acc.successes.push(userDataToTag(user))
+        return acc
+    }, {failures: [], successes: []})
+
+    if(!Object.values(results).flat.length) ctx.replyWithMarkdown(`No user found in your command, sorry. 😟`)
+    if(results.successes.length) ctx.replyWithMarkdown(`I'll notify ${results.successes.join(', ')}! You all can disable the notification with the /dontalertme command! 👍`)
+    if(results.failures.length) ctx.replyWithMarkdown(`I won't notify ${results.failures.join(', ')} since I failed trying to! 😓`)
+})
+
+/**
  * `left_chat_member` event listener. Removes a leaving issuer from the
  * subscribed users list for the current chat
  */
