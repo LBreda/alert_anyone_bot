@@ -84,7 +84,7 @@ bot.command('dontalertme', ctx => {
             if(e.code === 'ENOENT') {
                 ctx.replyWithMarkdown(`You were not subscribed, ${userDataToTag(user)}!`)
             } else {
-                ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, [${userDataToTag(user)}! 🤒`)
+                ctx.replyWithMarkdown(`I'm Ill and I couldn't save your preferences, ${userDataToTag(user)}! 🤒`)
             }
         } else {
             ctx.replyWithMarkdown(`I won't notify you anymore, [${userDataToTag(user)}! 👍`)
